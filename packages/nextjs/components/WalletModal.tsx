@@ -2,16 +2,18 @@
 
 import { useState } from 'react';
 
-interface WindowEthereum {
-  isMetaMask?: boolean;
-  isCoinbaseWallet?: boolean;
-  isTrust?: boolean;
-  request?: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
-}
-
-interface WindowWithWallet extends Window {
-  ethereum?: WindowEthereum;
-  okxwallet?: unknown;
+declare global {
+  interface Window {
+    ethereum?: {
+      isMetaMask?: boolean;
+      isCoinbaseWallet?: boolean;
+      isTrust?: boolean;
+      request?: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+      on?: (event: string, callback: (...args: unknown[]) => void) => void;
+      removeListener?: (event: string, callback: (...args: unknown[]) => void) => void;
+    };
+    okxwallet?: unknown;
+  }
 }
 
 interface WalletOption {
@@ -39,9 +41,9 @@ export default function WalletModal({ isOpen, onClose, onConnect }: WalletModalP
       name: 'MetaMask',
       icon: '🦊',
       description: 'Connect with MetaMask wallet',
-      isInstalled: () => typeof window !== 'undefined' && !!((window as WindowWithWallet).ethereum as WindowEthereum)?.isMetaMask,
+      isInstalled: () => typeof window !== 'undefined' && !!window.ethereum?.isMetaMask,
       connect: async () => {
-        if (typeof window === 'undefined' || !(window as WindowWithWallet).ethereum) {
+        if (typeof window === 'undefined' || !window.ethereum) {
           throw new Error('MetaMask is not installed. Please install it from metamask.io');
         }
         await onConnect();
@@ -52,9 +54,9 @@ export default function WalletModal({ isOpen, onClose, onConnect }: WalletModalP
       name: 'Coinbase Wallet',
       icon: '🔷',
       description: 'Connect with Coinbase Wallet',
-      isInstalled: () => typeof window !== 'undefined' && !!((window as WindowWithWallet).ethereum as WindowEthereum)?.isCoinbaseWallet,
+      isInstalled: () => typeof window !== 'undefined' && !!window.ethereum?.isCoinbaseWallet,
       connect: async () => {
-        if (typeof window === 'undefined' || !(window as WindowWithWallet).ethereum) {
+        if (typeof window === 'undefined' || !window.ethereum) {
           throw new Error('Coinbase Wallet is not installed. Please install it from coinbase.com/wallet');
         }
         await onConnect();
@@ -75,9 +77,9 @@ export default function WalletModal({ isOpen, onClose, onConnect }: WalletModalP
       name: 'Trust Wallet',
       icon: '⭐',
       description: 'Connect with Trust Wallet',
-      isInstalled: () => typeof window !== 'undefined' && !!((window as WindowWithWallet).ethereum as WindowEthereum)?.isTrust,
+      isInstalled: () => typeof window !== 'undefined' && !!window.ethereum?.isTrust,
       connect: async () => {
-        if (typeof window === 'undefined' || !(window as WindowWithWallet).ethereum) {
+        if (typeof window === 'undefined' || !window.ethereum) {
           throw new Error('Trust Wallet is not installed. Please install it from trustwallet.com');
         }
         await onConnect();
@@ -88,9 +90,9 @@ export default function WalletModal({ isOpen, onClose, onConnect }: WalletModalP
       name: 'OKX Wallet',
       icon: '⚫',
       description: 'Connect with OKX Wallet',
-      isInstalled: () => typeof window !== 'undefined' && !!(window as WindowWithWallet).okxwallet,
+      isInstalled: () => typeof window !== 'undefined' && !!window.okxwallet,
       connect: async () => {
-        if (typeof window === 'undefined' || !(window as WindowWithWallet).okxwallet) {
+        if (typeof window === 'undefined' || !window.okxwallet) {
           throw new Error('OKX Wallet is not installed. Please install it from okx.com/web3');
         }
         await onConnect();
