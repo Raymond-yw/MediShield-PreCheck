@@ -530,9 +530,9 @@ export default function Page() {
   const needsNetworkSwitch = walletReady && !onSepolia;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-100 via-orange-100 via-rose-100 to-pink-100 text-gray-900 relative overflow-hidden">
-      {/* GitHub and Zama links in top-right corner */}
-      <div className="fixed top-6 right-6 z-50 flex items-center gap-4">
+    <>
+      {/* GitHub and Zama links - fixed in top-right corner, independent of page scroll */}
+      <div className="fixed top-6 right-6 z-[999] flex items-center gap-4">
         <a
           href="https://github.com/Raymond-yw/MediShield-PreCheck"
           target="_blank"
@@ -560,7 +560,7 @@ export default function Page() {
         </a>
       </div>
 
-      {/* Cloud-like background layer - evenly spaced warm gradients */}
+      <div className="min-h-screen bg-gradient-to-br from-amber-100 via-orange-100 via-rose-100 to-pink-100 text-gray-900 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Top-left cluster */}
         <div className="absolute -top-20 -left-20 w-[450px] h-[450px] bg-gradient-radial from-yellow-400/50 via-orange-300/35 via-amber-300/20 to-transparent rounded-full blur-3xl animate-float opacity-85" />
@@ -1267,6 +1267,7 @@ export default function Page() {
           </p>
         </section>
       </main>
-    </div>
+      </div>
+    </>
   );
 }
