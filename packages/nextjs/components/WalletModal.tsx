@@ -2,16 +2,17 @@
 
 import { useState } from 'react';
 
+// Type guard for checking wallet properties
+type EthereumProvider = {
+  isMetaMask?: boolean;
+  isCoinbaseWallet?: boolean;
+  isTrust?: boolean;
+  request?: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+  [key: string]: unknown;
+};
+
 declare global {
   interface Window {
-    ethereum?: {
-      isMetaMask?: boolean;
-      isCoinbaseWallet?: boolean;
-      isTrust?: boolean;
-      request?: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
-      on?: (event: string, callback: (...args: unknown[]) => void) => void;
-      removeListener?: (event: string, callback: (...args: unknown[]) => void) => void;
-    };
     okxwallet?: unknown;
   }
 }
@@ -41,7 +42,11 @@ export default function WalletModal({ isOpen, onClose, onConnect }: WalletModalP
       name: 'MetaMask',
       icon: '🦊',
       description: 'Connect with MetaMask wallet',
-      isInstalled: () => typeof window !== 'undefined' && !!window.ethereum?.isMetaMask,
+      isInstalled: () => {
+        if (typeof window === 'undefined') return false;
+        const eth = window.ethereum as EthereumProvider | undefined;
+        return !!eth?.isMetaMask;
+      },
       connect: async () => {
         if (typeof window === 'undefined' || !window.ethereum) {
           throw new Error('MetaMask is not installed. Please install it from metamask.io');
@@ -54,7 +59,11 @@ export default function WalletModal({ isOpen, onClose, onConnect }: WalletModalP
       name: 'Coinbase Wallet',
       icon: '🔷',
       description: 'Connect with Coinbase Wallet',
-      isInstalled: () => typeof window !== 'undefined' && !!window.ethereum?.isCoinbaseWallet,
+      isInstalled: () => {
+        if (typeof window === 'undefined') return false;
+        const eth = window.ethereum as EthereumProvider | undefined;
+        return !!eth?.isCoinbaseWallet;
+      },
       connect: async () => {
         if (typeof window === 'undefined' || !window.ethereum) {
           throw new Error('Coinbase Wallet is not installed. Please install it from coinbase.com/wallet');
@@ -77,7 +86,11 @@ export default function WalletModal({ isOpen, onClose, onConnect }: WalletModalP
       name: 'Trust Wallet',
       icon: '⭐',
       description: 'Connect with Trust Wallet',
-      isInstalled: () => typeof window !== 'undefined' && !!window.ethereum?.isTrust,
+      isInstalled: () => {
+        if (typeof window === 'undefined') return false;
+        const eth = window.ethereum as EthereumProvider | undefined;
+        return !!eth?.isTrust;
+      },
       connect: async () => {
         if (typeof window === 'undefined' || !window.ethereum) {
           throw new Error('Trust Wallet is not installed. Please install it from trustwallet.com');
