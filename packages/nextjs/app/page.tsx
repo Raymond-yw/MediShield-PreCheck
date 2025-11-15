@@ -244,7 +244,7 @@ export default function Page() {
     setShowWalletModal(true);
   };
 
-  const handleWalletConnect = async (walletId: string) => {
+  const handleWalletConnect = async () => {
     try {
       await connectWallet();
     } catch (err) {
@@ -429,9 +429,10 @@ export default function Page() {
           lifestyleCipher.handle,
           lifestyleCipher.proof,
         );
-      } catch (signError: any) {
+      } catch (signError: unknown) {
         // User rejected the signature
-        if (signError?.code === 4001 || signError?.code === 'ACTION_REJECTED' || signError?.message?.includes('user rejected')) {
+        const error = signError as { code?: number | string; message?: string };
+        if (error?.code === 4001 || error?.code === 'ACTION_REJECTED' || error?.message?.includes('user rejected')) {
           setErrorMessage('Transaction signature rejected. No data was sent.');
           resetTimeline();
           return;
