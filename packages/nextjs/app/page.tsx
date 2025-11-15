@@ -201,6 +201,8 @@ export default function Page() {
   useEffect(() => {
     if (!walletReady && fheStatus !== 'idle') {
       resetFhevm();
+      // Also clear evaluation result when wallet disconnects
+      setEvaluationResult(null);
     }
   }, [walletReady, fheStatus, resetFhevm]);
 
@@ -475,6 +477,7 @@ export default function Page() {
     setErrorMessage(null);
     setSuccessMessage(null);
     resetTimeline(); // Reset the timeline state
+    setEvaluationResult(null); // Clear previous evaluation result
 
     // Clear all inputs
     setAge('');
