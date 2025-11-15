@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ethers } from 'ethers';
 import { useDecrypt, useFhevm, useWallet, getFheInstance } from '../lib/fhevm';
+import WalletModal from '../components/WalletModal';
 
 const CONTRACT_ABI = [
   {
@@ -163,6 +164,7 @@ export default function Page() {
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
   const [ageInputError, setAgeInputError] = useState(false);
   const [shakeKey, setShakeKey] = useState(0);
+  const [showWalletModal, setShowWalletModal] = useState(false);
 
   const contractAddress = useMemo(() => {
     if (!chainId) return undefined;
@@ -239,6 +241,10 @@ export default function Page() {
   };
 
   const handleConnect = async () => {
+    setShowWalletModal(true);
+  };
+
+  const handleWalletConnect = async (walletId: string) => {
     try {
       await connectWallet();
     } catch (err) {
@@ -696,6 +702,13 @@ export default function Page() {
           </div>
         </div>
       </section>
+
+      {/* Wallet Modal */}
+      <WalletModal
+        isOpen={showWalletModal}
+        onClose={() => setShowWalletModal(false)}
+        onConnect={handleWalletConnect}
+      />
 
       <main id="precheck" className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-10">
         <section className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
