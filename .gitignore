@@ -1,9 +1,11 @@
 .env
+note
 node_modules
 .DS_Store
 packages/*/node_modules
 packages/*/.DS_Store
 packages/*/dist
+packages/*/.next
 packages/*/.env
 packages/*/.turbo
 packages/*/coverage
